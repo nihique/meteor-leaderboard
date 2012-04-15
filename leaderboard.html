@@ -9,6 +9,7 @@
 </body>
 
 <template name="leaderboard">
+  <h1>Mercer's Top Developers</h1>
   <div class="leaderboard">
     <div class="header">
       Now sorting by '{{sort}}' (<a class="sort" href="#">change</a>)
@@ -30,7 +31,7 @@
   {{/if}}
 
   {{#unless selected_name}}
-  <div class="none">Click a player to select</div>
+  <div class="none">Click a developer to select</div>
   {{/unless}}
 </template>
 

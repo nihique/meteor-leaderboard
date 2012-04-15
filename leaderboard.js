@@ -1,27 +1,22 @@
-// Set up a collection to contain player information. On the server,
-// it is backed by a MongoDB collection named "players."
+// Client and server 
+var App = { db: {} };
 
-Players = new Meteor.Collection("players");
-
-var App = {};
+App.db.players = new Meteor.Collection("players");
 
 App.initSession = function () {
   return Session.get("sort") || Session.set("sort", "score");
 };
 
 App.initPlayers = function () {
-  if (Players.find().count() === 0) {
-    var names = ["Ada Lovelace",
-                 "Grace Hopper",
-                 "Marie Curie",
-                 "Carl Friedrich Gauss",
-                 "Nikola Tesla",
-                 "Claude Shannon"];
-    for (var i = 0; i < names.length; i++)
-      Players.insert({name: names[i], score: Math.floor(Math.random()*10)*5});
-  }
+  if (App.db.players.find().count() > 0) return;
+  var names = ["Martin", "Mirek", "Rasta", "Karel", "David", "Tomas"];
+  for (var i = 0; i < names.length; i++) {
+    App.db.players.insert({name: names[i], score: Math.floor(Math.random()*10)*5});
+  } 
 };
 
+
+// Client only
 if (Meteor.is_client) {
   App.initSession();
 
@@ -29,12 +24,11 @@ if (Meteor.is_client) {
     var sort = Session.get("sort") === "score"
       ? {score: -1, name: 1}
       : {name: 1, score: -1};
-
-    return Players.find({}, {sort: sort});
+    return App.db.players.find({}, {sort: sort});
   };
 
   Template.leaderboard.selected_name = function () {
-    var player = Players.findOne(Session.get("selected_player"));
+    var player = App.db.players.findOne(Session.get("selected_player"));
     return player && player.name;
   };
 
@@ -45,10 +39,10 @@ if (Meteor.is_client) {
   Template.player.selected = function () {
     return Session.equals("selected_player", this._id) ? "selected" : '';
   };
-  
+
   Template.leaderboard.events = {
     'click input.inc': function () {
-      Players.update(Session.get("selected_player"), {$inc: {score: 5}});
+      App.db.players.update(Session.get("selected_player"), {$inc: {score: 5}});
     },
     'click .sort': function () {
       var new_sort = Session.get("sort") !== 'name' ? 'name' : 'score';
@@ -63,7 +57,8 @@ if (Meteor.is_client) {
   };
 }
 
-// On server startup, create some players if the database is empty.
+
+// Server only
 if (Meteor.is_server) {
   Meteor.startup(function () {
     App.initPlayers();
