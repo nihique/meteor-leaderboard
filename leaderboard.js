@@ -45,7 +45,7 @@ if (Meteor.is_client) {
   Template.player.selected = function () {
     return Session.equals("selected_player", this._id) ? "selected" : '';
   };
-
+  
   Template.leaderboard.events = {
     'click input.inc': function () {
       Players.update(Session.get("selected_player"), {$inc: {score: 5}});
