@@ -11,8 +11,8 @@
 <template name="leaderboard">
   <h1>Mercer's Top Developers</h1>
   <div class="leaderboard">
-    <div class="header">
-      Now sorting by '{{sort}}' (<a class="sort" href="#">change</a>)
+    <div id="header">
+      Now sorting by '{{sort}}' (<a id="sort" href="#">change</a>)
     </div>
     <div class="player header">
       <span class="name">Name</span>
@@ -23,16 +23,17 @@
     {{/each}}
   </div>
 
-  {{#if selected_name}}
   <div class="details">
-    <div class="name">{{selected_name}}</div>
-    <input type="button" class="inc" value="Give 5 points" />
+    {{#if selected_name}}
+      <div class="name">{{selected_name}}</div>
+      <input type="button" id="add5points" value="Give 5 points" />
+    {{/if}}
+    {{#unless selected_name}}
+      <div class="none">Click a developer to select</div>
+    {{/unless}}
+    <input type="button" id="reset" value="Reset score" />
   </div>
-  {{/if}}
 
-  {{#unless selected_name}}
-  <div class="none">Click a developer to select</div>
-  {{/unless}}
 </template>
 
 <template name="player">

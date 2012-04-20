@@ -4,22 +4,39 @@ var App = { db: {} };
 App.db.players = new Meteor.Collection("players");
 
 App.initSession = function () {
-  return Session.get("sort") || Session.set("sort", "score");
+  Session.get("sort") || Session.set("sort", "score");
 };
 
 App.initPlayers = function () {
   if (App.db.players.find().count() > 0) return;
   var names = ["Martin", "Mirek", "Rasta", "Karel", "David", "Tomas"];
-  for (var i = 0; i < names.length; i++) {
-    App.db.players.insert({name: names[i], score: Math.floor(Math.random()*10)*5});
-  } 
+  _(names).each(function (name) {
+    App.db.players.insert({
+      name: name, 
+      score: App.getRandomScore()
+    });
+  });
 };
+
+App.resetScoreForAllPlayers = function () {
+  App.db.players.find().forEach(function (player) {
+    App.db.players.update(
+      {_id: player._id}, 
+      {$set: {score: App.getRandomScore()}}
+    );
+  });
+}
+
+App.getRandomScore = function () {
+  return Math.floor(Math.random()*10)*10;
+}
 
 
 // Client only
 if (Meteor.is_client) {
   App.initSession();
 
+  // Template's data
   Template.leaderboard.players = function () {
     var sort = Session.get("sort") === "score"
       ? {score: -1, name: 1}
@@ -40,13 +57,17 @@ if (Meteor.is_client) {
     return Session.equals("selected_player", this._id) ? "selected" : '';
   };
 
+  // Template's events
   Template.leaderboard.events = {
-    'click input.inc': function () {
+    'click #add5points': function () {
       App.db.players.update(Session.get("selected_player"), {$inc: {score: 5}});
     },
-    'click .sort': function () {
+    'click #sort': function () {
       var new_sort = Session.get("sort") !== 'name' ? 'name' : 'score';
       Session.set("sort", new_sort);
+    },
+    'click #reset': function() {
+      App.resetScoreForAllPlayers();
     }
   };
 
