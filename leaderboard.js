@@ -83,7 +83,7 @@ if (Meteor.is_client) {
       App.Models.Developers.addPointsToSelectedDeveloper(1);
     },
     'click #add5points': function () {
-      App.Models.Developers.addPointsToSelectedDeveloper(1);
+      App.Models.Developers.addPointsToSelectedDeveloper(5);
     },
     'click #add10points': function () {
       App.Models.Developers.addPointsToSelectedDeveloper(10);
