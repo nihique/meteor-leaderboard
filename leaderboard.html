@@ -14,12 +14,12 @@
     <div id="header">
       Now sorting by '{{sort}}' (<a id="sort" href="#">change</a>)
     </div>
-    <div class="player header">
+    <div class="developer header">
       <span class="name">Name</span>
       <span class="score">Score</span>
     </div>
-    {{#each players}}
-      {{> player}}
+    {{#each developers}}
+      {{> developer}}
     {{/each}}
   </div>
 
@@ -42,8 +42,8 @@
 
 </template>
 
-<template name="player">
-  <div class="player {{selected}}">
+<template name="developer">
+  <div class="developer {{selected}}">
     <span class="name">{{name}}</span>
     <span class="score">{{score}}</span>
   </div>

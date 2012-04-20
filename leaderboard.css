@@ -21,7 +21,7 @@ body {
     margin-bottom: 10px;
 }
 
-.player {
+.developer {
     padding: 5px;
 }
 
@@ -30,12 +30,12 @@ body {
     font-size: 1.25em;
 }
 
-.player .name {
+.developer .name {
     display: inline-block;
     width: 300px;
 }
 
-.player .score {
+.developer .score {
     display: inline-block;
     width: 100px;
     text-align: right;
@@ -43,22 +43,22 @@ body {
     color: #777;
 }
 
-.player.header {
+.developer.header {
     background-color: #aaa;
     padding: 7px 5px;
 }
 
-.player.header .name,
-.player.header .score {
+.developer.header .name,
+.developer.header .score {
     font-weight: normal;
     color: white;
 }
 
-.player.selected {
+.developer.selected {
     background-color: yellow;
 }
 
-.player.selected .score {
+.developer.selected .score {
     color: black;
 }
 
