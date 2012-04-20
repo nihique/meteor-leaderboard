@@ -26,12 +26,18 @@
   <div class="details">
     {{#if selected_name}}
       <div class="name">{{selected_name}}</div>
-      <input type="button" id="add5points" value="Give 5 points" />
+      <div>
+        <input type="button" id="add1point" value="Give 1 point" />
+        <input type="button" id="add5points" value="Give 5 points" />
+        <input type="button" id="add10points" value="Give 10 points" />
+      </div>
     {{/if}}
     {{#unless selected_name}}
       <div class="none">Click a developer to select</div>
     {{/unless}}
-    <input type="button" id="reset" value="Reset score" />
+    <div>
+      <input type="button" id="reset" value="Reset score" />
+    </div>
   </div>
 
 </template>
