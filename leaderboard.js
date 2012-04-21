@@ -1,62 +1,50 @@
-// Client and server 
+// Client && Server 
 var App = { 
   Models: {},
   Helpers: {}
 };
 
-// Model::Developers
+// Models::Developers
 App.Models.Developers = new Meteor.Collection("Developers");
-
-App.Models.Developers.init = function () {
-  if (App.Models.Developers.find().count() > 0) return;
-  var names = ["Martin", "Mirek", "Rasta", "Karel", "David", "Tomas"];
-  _(names).each(function (name) {
-    App.Models.Developers.insert({
-      name: name, 
-      score: App.Models.Developers.getRandomScore()
-    });
-  });
-};
-
-App.Models.Developers.resetScore = function () {
-  App.Models.Developers.find().forEach(function (developer) {
-    App.Models.Developers.update(
-      {_id: developer._id}, 
-      {$set: {score: App.Models.Developers.getRandomScore()}}
-    );
-  });
-};
 
 App.Models.Developers.getRandomScore = function () {
   return Math.floor(Math.random()*50);
 };
 
-App.Models.Developers.addPointsToSelectedDeveloper = function (points) {
-  App.Models.Developers.update(
-    App.Models.Developers.getSelectedId(), 
-    {$inc: {score: points}}
-  );
-};
-
-App.Models.Developers.getSelectedId = function () {
-  return Session.get("selected_developer");
-};
-
-App.Models.Developers.setSelectedId = function (id) {
-  return Session.set("selected_developer", id);
-};
-
-// Helpers
-App.Helpers.initSession = function () {
-  Session.get("sort") || Session.set("sort", "score");
-};
-
 
 // Client only
 if (Meteor.is_client) {
-  App.Helpers.initSession();
+  // Client::Models::Developers
+  App.Models.Developers.resetScore = function () {
+    App.Models.Developers.find().forEach(function (developer) {
+      App.Models.Developers.update(
+        {_id: developer._id}, 
+        {$set: {score: App.Models.Developers.getRandomScore()}}
+      );
+    });
+  };
 
-  // Template's data
+  App.Models.Developers.addPointsToSelectedDeveloper = function (points) {
+    App.Models.Developers.update(
+      App.Models.Developers.getSelectedId(), 
+      {$inc: {score: points}}
+    );
+  };
+
+  App.Models.Developers.getSelectedId = function () {
+    return Session.get("selected_developer");
+  };
+
+  App.Models.Developers.setSelectedId = function (id) {
+    return Session.set("selected_developer", id);
+  };
+
+  // Client::Helpers
+  App.Helpers.initSession = function () {
+    Session.get("sort") || Session.set("sort", "score");
+  };
+
+  // Client::Templates::Data
   Template.leaderboard.developers = function () {
     var sort = Session.get("sort") === "score"
       ? {score: -1, name: 1}
@@ -77,7 +65,7 @@ if (Meteor.is_client) {
     return App.Models.Developers.getSelectedId() === this._id ? "selected" : '';
   };
 
-  // Template's events
+  // Client::Templates::Events
   Template.leaderboard.events = {
     'click #add1point': function () {
       App.Models.Developers.addPointsToSelectedDeveloper(1);
@@ -102,11 +90,28 @@ if (Meteor.is_client) {
       Session.set("selected_developer", this._id);
     }
   };
+
+  // Client::Startup
+  App.Helpers.initSession();
 }
 
 
 // Server only
 if (Meteor.is_server) {
+
+  // Server::Models::Developers
+  App.Models.Developers.init = function () {
+    if (App.Models.Developers.find().count() > 0) return;
+    var names = ["Martin", "Mirek", "Rasta", "Karel", "David", "Tomas"];
+    _(names).each(function (name) {
+      App.Models.Developers.insert({
+        name: name, 
+        score: App.Models.Developers.getRandomScore()
+      });
+    });
+  };
+
+  // Server::Meteor
   Meteor.startup(function () {
     App.Models.Developers.init();
   });
